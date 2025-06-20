@@ -1,0 +1,64 @@
+<mat-toolbar class="toolbar" color="primary">
+    
+  <div class="left-section">
+    
+      <img src="education@2x.png" alt="Book Pic" width="5px" height="5px">
+    
+    <span>Bookstore</span>
+  </div>
+
+  <div class="search-container desktop-search">
+    <mat-icon>search</mat-icon>
+    <input matInput placeholder="   Search" />
+  </div>
+
+  <div class="right-section">
+    <button
+      mat-icon-button
+      class="mobile-search"
+      (click)="mobileSearchOpen = true">
+      <mat-icon>search</mat-icon>
+    </button>
+
+   
+
+    <!-- <button mat-icon-button (click)="toggleView()">
+      <mat-icon>{{
+        isGrid ?  "grid_view" : "view_stream_outline" 
+      }}</mat-icon>
+    </button> -->
+
+   <!-- <button mat-icon-button>
+  <mat-icon fontSet="material-symbols-outlined" fontIcon="settings">settings</mat-icon>
+</button> -->
+
+
+<div class="icons">
+    
+
+    <div class="profile">
+
+    <button mat-icon-button class="circle white-icon">
+  <mat-icon>account_circle</mat-icon>
+</button>
+    <span class="text">Profile</span>
+    </div>
+
+    <div class="cart">
+
+    <img src="supermarket.png" alt="Cart image" width="20px" height="20px">
+    <span class="text">Cart</span>
+    </div>
+    </div>
+  </div>
+  
+  
+</mat-toolbar>
+
+<div class="mobile-search-bar" *ngIf="mobileSearchOpen">
+  <mat-icon>search</mat-icon>
+  <input matInput placeholder="Search" />
+  <button mat-icon-button (click)="mobileSearchOpen = false">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
