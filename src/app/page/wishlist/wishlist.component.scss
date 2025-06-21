@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  justify-content: center;   /* Horizontal center */
+  align-items: center;       /* Vertical center */
+  height: 85vh;             /* Full viewport height */
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inner h1{
+    margin:0;
+    margin-bottom: 5px;
+}
+
+.inner p{
+ margin:0;
+ margin-bottom: 25px;
+}

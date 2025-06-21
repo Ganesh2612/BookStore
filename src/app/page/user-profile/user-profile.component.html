@@ -1,0 +1,73 @@
+<app-toolbar></app-toolbar>
+
+<!--Body section-->
+
+<div class="breadcrumb">Home / <strong>Profile</strong></div>
+<div class="body-section">
+<mat-card class="profile-card">
+  <div class="section-header">
+    <h2>Personal Details</h2>
+    <a class="edit-link" href="#">Edit</a>
+  </div>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Full Name</mat-label>
+    <input matInput value="Poonam Yadav" disabled />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Email Id</mat-label>
+    <input matInput value="Poonam.Yadav@bridgelabz.com" disabled />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Password</mat-label>
+    <input matInput type="password" value="************" disabled />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Mobile Number</mat-label>
+    <input matInput value="81678954778" disabled />
+  </mat-form-field>
+</mat-card>
+
+<mat-card class="address-card">
+  <div class="section-header">
+    <h2>Address Details</h2>
+    <button mat-stroked-button color="primary">Add New Address</button>
+  </div>
+
+  <div class="address-block">
+    <div class="address-title">
+      <strong>1. WORK</strong>
+      <a class="edit-link" href="#">Edit</a>
+    </div>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Address</mat-label>
+      <textarea matInput rows="3" disabled>
+BridgeLabz Solutions LLP, No. 42, 14th Main, 15th Cross, Sector 4, Opp to BDA complex, near Kumarakom restaurant, HSR Layout, Bangalore
+      </textarea>
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="fill" class="half-width">
+        <mat-label>City/Town</mat-label>
+        <input matInput value="Bengaluru" disabled />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="half-width">
+        <mat-label>State</mat-label>
+        <input matInput value="Karnataka" disabled />
+      </mat-form-field>
+    </div>
+
+    <label>Type</label>
+    <mat-radio-group class="radio-group" disabled>
+      <mat-radio-button value="home">Home</mat-radio-button>
+      <mat-radio-button value="work" checked>Work</mat-radio-button>
+      <mat-radio-button value="other">Other</mat-radio-button>
+    </mat-radio-group>
+  </div>
+</mat-card>
+</div>
