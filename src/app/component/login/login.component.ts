@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../Services/User/user.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   standalone:true,
@@ -17,13 +18,13 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent{
+export class LoginComponent implements OnInit{
   isLogin = true;
   showPassword = false;
   loginForm!: FormGroup;
   signupForm!: FormGroup;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
@@ -58,8 +59,22 @@ export class LoginComponent{
     if (this.loginForm.valid) {
       this.userService.login(this.loginForm.value).subscribe({
         next: (res) => {
-          console.log('Login success:', res);
-          this.loginForm.reset();
+          console.log(res);
+          const token = (res as any).result.accessToken;
+
+          localStorage.setItem('token', token);
+
+          let users = JSON.parse(localStorage.getItem('users') || '[]');
+
+          let loggedInUser = users.find(
+            (user: any) => user.email === this.loginForm.value.email
+          );
+
+          if (loggedInUser) {
+            localStorage.setItem('currentUser', JSON.stringify(loggedInUser));
+          }
+
+          this.router.navigate(['/home']);
         },
         error: (err) => console.error('Login failed:', err),
       });
@@ -71,7 +86,23 @@ export class LoginComponent{
       this.userService.register(this.signupForm.value).subscribe({
         next: (res) => {
           console.log('Signup success:', res);
+          const user = (res as any).result;
+
+          let users = JSON.parse(localStorage.getItem('users') || '[]');
+
+          users.push({
+            fullName: user.fullName,
+            email: user.email,
+            _id: user._id,
+            phone: user.phone,
+            password: user.password,
+            address: user.address || [],
+          });
+
+          localStorage.setItem('users', JSON.stringify(users));
+
           this.signupForm.reset();
+          this.isLogin = true;
         },
         error: (err) => console.error('Signup failed:', err),
       });

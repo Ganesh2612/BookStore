@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ToolbarComponent } from '../../component/dashboard/toolbar/toolbar.component';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-wishlist',
   imports: [ToolbarComponent],
@@ -9,4 +11,9 @@ import { ToolbarComponent } from '../../component/dashboard/toolbar/toolbar.comp
 })
 export class WishlistComponent {
 
+   constructor(private router: Router) {}
+
+onLogin(){
+   this.router.navigate(['/login']);
+}
 }

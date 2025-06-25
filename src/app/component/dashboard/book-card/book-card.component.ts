@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
   styleUrl: './book-card.component.scss'
 })
 export class BookCardComponent {
+  books:[]=[];
 selectedSort = 'Sort by relevance';
 sortOptions: string[] = [
   'Sort by relevance',

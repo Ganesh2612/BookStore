@@ -1,73 +1,72 @@
-<app-toolbar></app-toolbar>
+<div class="profile-container">
+  <p class="breadcrumb"><a routerLink="/home">Home</a> / <b>Profile</b></p>
 
-<!--Body section-->
+  <h2>
+    Personal Details
+    <a class="edit-link" *ngIf="!isEditing" (click)="enableEdit()">Edit</a>
+    <button
+      *ngIf="isEditing"
+      mat-raised-button
+      color="primary"
+      (click)="save()"
+    >
+      Save
+    </button>
+  </h2>
 
-<div class="breadcrumb">Home / <strong>Profile</strong></div>
-<div class="body-section">
-<mat-card class="profile-card">
-  <div class="section-header">
-    <h2>Personal Details</h2>
-    <a class="edit-link" href="#">Edit</a>
-  </div>
+  <form [formGroup]="personal">
+    <label>Full Name</label>
+    <input formControlName="fullName" />
 
-  <mat-form-field appearance="fill" class="full-width">
-    <mat-label>Full Name</mat-label>
-    <input matInput value="Poonam Yadav" disabled />
-  </mat-form-field>
+    <label>Email Id</label>
+    <input formControlName="email" />
 
-  <mat-form-field appearance="fill" class="full-width">
-    <mat-label>Email Id</mat-label>
-    <input matInput value="Poonam.Yadav@bridgelabz.com" disabled />
-  </mat-form-field>
+    <label>Password</label>
+    <input formControlName="password" type="password" />
 
-  <mat-form-field appearance="fill" class="full-width">
-    <mat-label>Password</mat-label>
-    <input matInput type="password" value="************" disabled />
-  </mat-form-field>
+    <label>Mobile Number</label>
+    <input formControlName="phone" />
+  </form>
 
-  <mat-form-field appearance="fill" class="full-width">
-    <mat-label>Mobile Number</mat-label>
-    <input matInput value="81678954778" disabled />
-  </mat-form-field>
-</mat-card>
-
-<mat-card class="address-card">
-  <div class="section-header">
+  <div class="address-title-bar">
     <h2>Address Details</h2>
-    <button mat-stroked-button color="primary">Add New Address</button>
+    <button mat-stroked-button class="new-add" (click)="addNewAddress()">
+      Add New Address
+    </button>
   </div>
 
-  <div class="address-block">
-    <div class="address-title">
-      <strong>1. WORK</strong>
-      <a class="edit-link" href="#">Edit</a>
+  <form class="address-card" [formGroup]="addressForm">
+    <div class="top-bar">
+      <h3>1. {{ addressForm.get("type")?.value.toUpperCase() }}</h3>
+      <ng-container *ngIf="!isEditingAdd; else saveBtn">
+        <a class="edit-link" (click)="enableAddEdit()">Edit</a>
+      </ng-container>
+      <ng-template #saveBtn>
+        <button mat-raised-button color="primary" (click)="saveAddress()">
+          Save
+        </button>
+      </ng-template>
     </div>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Address</mat-label>
-      <textarea matInput rows="3" disabled>
-BridgeLabz Solutions LLP, No. 42, 14th Main, 15th Cross, Sector 4, Opp to BDA complex, near Kumarakom restaurant, HSR Layout, Bangalore
-      </textarea>
-    </mat-form-field>
+    <label>Address</label>
+    <textarea formControlName="address"></textarea>
 
-    <div class="row">
-      <mat-form-field appearance="fill" class="half-width">
-        <mat-label>City/Town</mat-label>
-        <input matInput value="Bengaluru" disabled />
-      </mat-form-field>
-
-      <mat-form-field appearance="fill" class="half-width">
-        <mat-label>State</mat-label>
-        <input matInput value="Karnataka" disabled />
-      </mat-form-field>
+    <div class="city-state">
+      <div>
+        <label>City/Town</label>
+        <input formControlName="city" />
+      </div>
+      <div>
+        <label>State</label>
+        <input formControlName="state" />
+      </div>
     </div>
 
     <label>Type</label>
-    <mat-radio-group class="radio-group" disabled>
-      <mat-radio-button value="home">Home</mat-radio-button>
-      <mat-radio-button value="work" checked>Work</mat-radio-button>
-      <mat-radio-button value="other">Other</mat-radio-button>
+    <mat-radio-group formControlName="type">
+      <mat-radio-button value="Home">Home</mat-radio-button>
+      <mat-radio-button value="Office">Office</mat-radio-button>
+      <mat-radio-button value="Other">Other</mat-radio-button>
     </mat-radio-group>
-  </div>
-</mat-card>
+  </form>
 </div>
