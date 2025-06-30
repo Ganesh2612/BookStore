@@ -1,109 +1,99 @@
-<div class="cart-container" *ngIf="cartItems.length > 0; else noCart">
-  <p class="breadcrumb"><a routerLink="/home">Home</a> / <b>My cart</b></p>
+<app-toolbar></app-toolbar>
 
-  <div class="cart-header">
-    <h3>My Cart ({{ cartItems.length }})</h3>
-    <div class="location-selector">
-      <mat-icon>location_on</mat-icon>
-      Use current location
-      <mat-icon>expand_more</mat-icon>
-    </div>
-  </div>
+<div class="cart-wrapper">
+  <div class="cartbox">
+    <h3>My cart ({{ cartItems.length }})</h3>
 
-  <div class="cart-item" *ngFor="let item of cartItems">
-    <img src="assets/bookimg.png" alt="Book Image" />
-    <div class="item-details">
-      <h4>{{ item.product_id.bookName }}</h4>
-      <p class="author">by {{ item.product_id.author }}</p>
-      <div class="price">
-        <span class="sale-price">Rs. {{ item.product_id.discountPrice }}</span>
-        <span class="original-price">Rs. {{ item.product_id.price }}</span>
-      </div>
-      <div class="quantity-control">
-        <button
-          mat-icon-button
-          class="addBtn"
-          (click)="decrementQuantity(item)"
-        >
-          <mat-icon>remove</mat-icon>
-        </button>
-        <span>{{ item.quantityToBuy }}</span>
-        <button
-          mat-icon-button
-          class="addBtn"
-          (click)="incrementQuantity(item)"
-        >
-          <mat-icon>add</mat-icon>
-        </button>
-        <a class="remove-link" (click)="removeFromCart(item._id)">Remove</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="customer-details">
-    <h3>Customer Details</h3>
-
-    <div class="customer-fields">
-      <div>
-        <label>Full Name</label>
-        <input [value]="userName" disabled />
-      </div>
-      <div>
-        <label>Mobile Number</label>
-        <input [value]="userPhone" disabled />
-      </div>
-    </div>
-
-    <div
-      *ngFor="let address of addresses; let i = index"
-      class="address-section"
-    >
-      <label>Address</label>
-      <textarea [value]="address.address" disabled></textarea>
-
-      <div class="customer-fields">
-        <div>
-          <label>City/Town</label>
-          <input [value]="address.city" disabled />
-        </div>
-        <div>
-          <label>State</label>
-          <input [value]="address.state" disabled />
-        </div>
-      </div>
-    </div>
-
-    <button
-      mat-raised-button
-      color="primary"
-      class="continue-button"
-      (click)="continueToSummary()"
-    >
-      CONTINUE
-    </button>
-  </div>
-
-  <div class="order-summary" *ngIf="showSummary">
-    <h3>Order Summary</h3>
-    <div *ngFor="let item of cartItems" class="summary-item">
-      <img src="assets/bookimg.png" alt="Book Image" />
-      <div>
+    <div *ngFor="let item of cartItems" class="cart-item-card">
+      <img [src]="item.product_id.bookImage || '/book.png'" alt="Book" class="book-img" />
+      <div class="book-details">
         <h4>{{ item.product_id.bookName }}</h4>
-        <p class="author">by {{ item.product_id.author }}</p>
-        <span class="sale-price">Rs. {{ item.product_id.discountPrice }}</span>
+        <p>by {{ item.product_id.author }}</p>
+        <div class="price">
+          Rs. {{ item.product_id.discountPrice }}
+          <span class="strike">Rs. {{ item.product_id.price }}</span>
+        </div>
+        <div class="qty-actions">
+          <button (click)="changeQty(item, item.quantityToBuy - 1)">−</button>
+          <span>{{ item.quantityToBuy }}</span>
+          <button (click)="changeQty(item, item.quantityToBuy + 1)">+</button>
+          <span class="remove" (click)="removeItem(item._id)">Remove</span>
+        </div>
       </div>
     </div>
-    <button
-      mat-raised-button
-      color="primary"
-      class="checkout-button"
-      (click)="orderNow()"
-    >
-      CHECKOUT
-    </button>
+
+    <div class="cart-footer" *ngIf="!showAddressSection">
+      <button (click)="placeOrderClicked()">PLACE ORDER</button>
+    </div>
+  </div>
+
+  <div class="step-box">
+    <div class="step-header">Address Details</div>
+
+    <div *ngIf="showAddressSection" class="step-body">
+      <div class="address-header">
+        <p><strong>1. ADDRESS</strong>
+          <span class="edit-btn" (click)="toggleAddressEdit(0)">
+            {{ addresses[0]?.isEditing ? 'Save' : 'Edit' }}
+          </span>
+        </p>
+        <button class="add-btn" (click)="addNewAddress()">Add New Address</button>
+      </div>
+
+      <div *ngFor="let addr of addresses; let i = index">
+        <label>Address</label>
+        <textarea rows="2" [(ngModel)]="addr.fullAddress" [disabled]="!addr.isEditing"></textarea>
+
+        <div class="form-row">
+          <input type="text" placeholder="City/Town" [(ngModel)]="addr.city" [disabled]="!addr.isEditing" />
+          <input type="text" placeholder="State" [(ngModel)]="addr.state" [disabled]="!addr.isEditing" />
+        </div>
+
+        <div class="type-row">
+          <p>Type</p>
+          <div class="type-options">
+            <label>
+              <input type="radio" name="type-{{ i }}" value="Home" [(ngModel)]="addr.type" [disabled]="!addr.isEditing" /> Home
+            </label>
+            <label>
+              <input type="radio" name="type-{{ i }}" value="Work" [(ngModel)]="addr.type" [disabled]="!addr.isEditing" /> Work
+            </label>
+            <label>
+              <input type="radio" name="type-{{ i }}" value="Other" [(ngModel)]="addr.type" [disabled]="!addr.isEditing" /> Other
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cart-footer" *ngIf="!showOrderSummarySection" >
+      <button (click)="continueClicked()">CONTINUE</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-box">
+    <div class="step-header">Order Summary</div>
+    <div *ngIf="showOrderSummarySection" class="step-body">
+      <div *ngFor="let item of cartItems" class="summary-card">
+        <img [src]="item.product_id.bookImage || '/book.png'" alt="Book" class="summary-img" />
+        <div class="summary-details">
+          <h4>{{ item.product_id.bookName }}</h4>
+          <p>by {{ item.product_id.author }}</p>
+          <div class="summary-price">
+            Rs. {{ item.product_id.discountPrice }} × {{ item.quantityToBuy }} =
+            <strong>Rs. {{ item.product_id.discountPrice * item.quantityToBuy }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-total">
+        Grand Total: <strong>Rs. {{ grandTotal }}</strong>
+      </div>
+<div class="cart-footer"  >
+      <button (click)="checkout()">CHECKOUT</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<ng-template #noCart>
-  <p>Your cart is empty.</p>
-</ng-template>
+<app-footer></app-footer>

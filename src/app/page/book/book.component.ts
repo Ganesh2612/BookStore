@@ -1,13 +1,17 @@
-import { Component } from '@angular/core';
+import { UserService } from './../../Services/User/user.service';
+import { Component,OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ToolbarComponent } from '../../component/dashboard/toolbar/toolbar.component';
 import { BookService } from '../../Services/Book/book.service';
-import { UserService } from '../../Services/User/user.service';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-
+import { CartService } from '../../services/cart/cart.service';
+import { HttpService } from '../../Services/http/http.service';
+import { WishlistService } from '../../Services/wishlist/wishlist.service';
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-book',
@@ -15,7 +19,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './book.component.html',
   styleUrl: './book.component.scss'
 })
-export class BookComponent {
+export class BookComponent implements OnInit {
   book: any;
   feedbacks: any[] = [];
   selectedRating = 0;
@@ -27,7 +31,11 @@ export class BookComponent {
   constructor(
     private route: ActivatedRoute,
     private bookService: BookService,
-    private userService: UserService
+    private cartService: CartService,
+    private wishlistService: WishlistService,
+    private http: HttpService,
+    private router: Router,
+    private userService:UserService
   ) {}
 
   ngOnInit(): void {
@@ -49,7 +57,7 @@ export class BookComponent {
           rating: fb.rating,
         }));
       },
-      error: (err) => console.error('Failed to fetch feedback:', err),
+      error: (err:any) => console.error('Failed to fetch feedback:', err),
     });
   }
 
@@ -78,7 +86,7 @@ export class BookComponent {
       next: () => {
         this.isWishlisted = true;
       },
-      error: (err) => console.error('Failed to add to wishlist:', err),
+      error: (err:any) => console.error('Failed to add to wishlist:', err),
     });
   }
 
@@ -89,7 +97,7 @@ export class BookComponent {
           (item: any) => item._id === this.book._id
         );
       },
-      error: (err) => console.error('Failed to load wishlist status:', err),
+      error: (err:any) => console.error('Failed to load wishlist status:', err),
     });
   }
 
@@ -109,10 +117,10 @@ export class BookComponent {
               this.book.cartItemId = cartItem._id;
             }
           },
-          error: (err) => console.error('Failed to fetch cart:', err),
+          error: (err:any) => console.error('Failed to fetch cart:', err),
         });
       },
-      error: (err) => console.error('Failed to add to cart:', err),
+      error: (err:any) => console.error('Failed to add to cart:', err),
     });
   }
 
@@ -138,7 +146,7 @@ export class BookComponent {
           .updateCart(this.book.cartItemId, this.quantity)
           .subscribe({
             next: () => console.log('Cart quantity updated successfully'),
-            error: (err) =>
+            error: (err:any) =>
               console.error('Failed to update cart quantity:', err),
           });
       }

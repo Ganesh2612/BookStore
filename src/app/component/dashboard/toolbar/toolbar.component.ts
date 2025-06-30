@@ -1,48 +1,96 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Input, Inject} from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
-
+import { PLATFORM_ID } from '@angular/core';
 import { FooterComponent } from '../footer/footer.component';
 import { BookService } from '../../../Services/Book/book.service';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { CartService } from '../../../services/cart/cart.service';
+import { SearchService } from '../../../Services/search/search.service';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-toolbar',
   standalone:true,
-  imports: [MatDividerModule,MatMenuModule,MatIconModule,MatToolbarModule,CommonModule,RouterLink,CommonModule],
+  imports: [MatDividerModule,MatMenuModule,MatIconModule,MatToolbarModule,CommonModule,RouterLink,CommonModule,FormsModule],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss'
 })
-export class ToolbarComponent implements OnInit{
-  isLoggedIn = false;
-  userName = 'User';
+export class ToolbarComponent implements OnInit {
+  @Input() showSearch: boolean = true;
+  @Input() showProfile: boolean = true;
+  @Input() showCart: boolean = true;
+  searchText: string = '';
+  isLoggedIn: boolean = false;
+  userName: string = '';
+  cartCount = 0;
 
-  books: any[] = [];
-
-  constructor(private bookService: BookService, public router: Router) {}
+  constructor(
+    private router: Router,
+    private cartService: CartService,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private searchService: SearchService
+  ) {}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
-    this.isLoggedIn = !!token;
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('authToken');
+      const user = localStorage.getItem('user');
 
-    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-    this.userName = userInfo.fullName || 'User';
+      if (token && user) {
+        this.isLoggedIn = true;
+        this.userName = JSON.parse(user).fullName;
+      } else if (token) {
+        this.isLoggedIn = true;
+        this.userName = 'User';
+      }
 
-    this.bookService.getBooks().subscribe({
-      next: (res: any) => {
-        this.books = res.result || [];
-      },
-      error: (err:any) => console.error('Error fetching books:', err),
-    });
+      this.cartService.getCartCountObservable().subscribe(count => {
+        this.cartCount = count;
+      });
+      this.cartService.updateCartCount();
+    }
   }
 
-  logout(): void {
-    localStorage.removeItem('token');
-    this.isLoggedIn = false;
+  navigateToLogin() {
     this.router.navigate(['/login']);
   }
+
+  logout() {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.clear();
+    }
+    this.isLoggedIn = false;
+    this.userName = '';
+    this.router.navigate(['/']);
+  }
+
+  navigateToProfile() {
+    this.router.navigate(['/profile']);
+  }
+
+  goToCart() {
+    this.router.navigate(['/cart']);
+  }
+
+  navigateToOrders() {
+    this.router.navigate(['/my-orders']);
+  }
+
+  navigateToWishlist() {
+    this.router.navigate(['/wishlist']);
+  }
+
+  navigateToHome() {
+    this.router.navigate(['/home']);
+  }
+  
+
+onSearchChange(): void {
+  this.searchService.setSearchQuery(this.searchText);
+}
 }

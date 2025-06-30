@@ -3,12 +3,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { Component, OnInit, } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule} from '@angular/material/card';
+import { ToolbarComponent } from '../../component/dashboard/toolbar/toolbar.component';
 
 
 
 @Component({
   selector: 'app-forgot-password',
-  imports: [MatCardModule,MatFormFieldModule,ReactiveFormsModule],
+  standalone:true,
+  imports: [MatCardModule,MatFormFieldModule,ReactiveFormsModule, ToolbarComponent],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss'
 })
@@ -35,7 +37,7 @@ export class ForgotPasswordComponent implements OnInit{
     }
   }
 
-  goToCreateAccount(): void {
+  goToRegister(): void {
     alert('Redirecting to account creation...');
     // Replace with router.navigate(['/create-account']) if using routing
   }
